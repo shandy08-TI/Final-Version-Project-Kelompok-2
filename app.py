@@ -577,11 +577,16 @@ def detect_archetype(scores: dict) -> tuple[str, str, str]:
     """Deteksi archetype berdasarkan pola skor M1-M9."""
     total = sum(scores.values())
     avg   = total / len(scores)
+    
+    # PERBAIKAN: Sesuaikan key dengan raw_scores_100
     m1, m2, m4, m7, m8 = (
-        scores.get("M1", 50), scores.get("M2", 50),
-        scores.get("M4", 50), scores.get("M7", 50),
-        scores.get("M8", 50),
+        scores.get("M1 Background", 50), 
+        scores.get("M2 Hard Skills", 50),
+        scores.get("M4 Interest", 50), 
+        scores.get("M7 Branding", 50),
+        scores.get("M8 Ambisi", 50),
     )
+    
     if avg >= 70 and m8 >= 70 and m4 >= 70:
         return "🌟 The Visionary Leader", "#0a84ff", (
             "Anda memiliki visi kuat dan dorongan kepemimpinan yang tinggi. "
