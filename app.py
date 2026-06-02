@@ -574,14 +574,22 @@ def parse_semester(raw: str) -> int:
 
 
 def detect_archetype(scores: dict) -> tuple[str, str, str]:
-    """Deteksi archetype berdasarkan pola skor M1-M9."""
+    """Deteksi archetype berdasarkan pola skor M1-M9 (Anti-Bug)."""
+    if not scores:
+        return "🔍 The Adaptive Explorer", "#bf5af2", "Data tidak ditemukan."
+        
     total = sum(scores.values())
     avg   = total / len(scores)
-    m1, m2, m4, m7, m8 = (
-        scores.get("M1", 50), scores.get("M2", 50),
-        scores.get("M4", 50), scores.get("M7", 50),
-        scores.get("M8", 50),
-    )
+    
+    # CARA PALING AMAN: Cari nilai berdasarkan awalan "M1", "M2", dst.
+    # str(k).upper() memastikan tidak ada masalah huruf besar/kecil
+    m1 = next((v for k, v in scores.items() if "M1" in str(k).upper()), 50)
+    m2 = next((v for k, v in scores.items() if "M2" in str(k).upper()), 50)
+    m4 = next((v for k, v in scores.items() if "M4" in str(k).upper()), 50)
+    m7 = next((v for k, v in scores.items() if "M7" in str(k).upper()), 50)
+    m8 = next((v for k, v in scores.items() if "M8" in str(k).upper()), 50)
+    
+    # LOGIKA PENENTUAN ARCHETYPE
     if avg >= 70 and m8 >= 70 and m4 >= 70:
         return "🌟 The Visionary Leader", "#0a84ff", (
             "Anda memiliki visi kuat dan dorongan kepemimpinan yang tinggi. "
@@ -598,6 +606,7 @@ def detect_archetype(scores: dict) -> tuple[str, str, str]:
             "Passion yang tinggi dikombinasikan kemampuan personal branding yang kuat. "
             "Anda cocok di lingkungan yang menghargai ide segar dan ekspresi diri."
         )
+        
     return "🔍 The Adaptive Explorer", "#bf5af2", (
         "Profil Anda menunjukkan fleksibilitas tinggi dan kemampuan adaptasi lintas "
         "domain. Kekuatan Anda ada di kemampuan menjembatani berbagai bidang."
